@@ -33,9 +33,11 @@ export default class ImageProcessor {
     }
     this.saveTo = saveTo;
     const entryPoint = pjson.entryPoint;
-    if (!entryPoint) {
-      console.log("No entryPoint found in package.json");
-      return process.exit(1);
+    if (!entryPoint || entryPoint === "." || entryPoint === "./" || entryPoint === "/" || entryPoint === "" ) {
+      this.entryPoint = ""
+    } else {
+      this.entryPoint = ".."
+
     }
     const output = pjson.output;
     if (!output) {

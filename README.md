@@ -14,5 +14,14 @@ clone the repository and run the script with the following command:
 npm run conv
 ```
 
->By default the script will scan the parent folder. 
+>By default the script will scan the parent folder. You can change the folder to scan by modifying the `saveTo` variable in the `package.json` file.
+
+```json
+{ 
+  "entryPoint": "..",        // .. = parent folder // "." = current folder
+  "output": "output",       // output folder
+  "extension": ".HEIC",    // file extension to scan
+  "saveTo": "original",   // folder to save the original images
+}
+  ```
 
