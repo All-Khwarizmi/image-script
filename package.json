@@ -1,7 +1,7 @@
 {
-  "name": "img",
+  "name": "command-line-image-to-pdf-converter",
   "version": "1.0.0",
-  "description": "",
+  "description": "Converts images to PDFs from the command line",
   "main": "main.mjs",
   "entryPoint": "..",
   "output": "output",
@@ -10,8 +10,13 @@
   "scripts": {
     "conv": "node main.mjs"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "image",
+    "pdf",
+    "converter",
+    "command-line"
+  ],
+  "author": "Jason Suárez",
   "license": "ISC",
   "dependencies": {
     "heic-convert": "^2.1.0",
