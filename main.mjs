@@ -46,7 +46,7 @@ let fileName;
   }
 
   // Convert the images to a PDF file
-  imageProcessor.convertWthPDFKit(response.value, fileName.value);
+  imageProcessor.convertToPDF(response.value, fileName.value);
 
   console.log("Conversion complete");
 })();

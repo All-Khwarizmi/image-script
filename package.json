@@ -9,17 +9,13 @@
   "saveTo": "original",
   "scripts": {
     "conv": "node main.mjs"
-
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "heic-convert": "^2.1.0",
-    "image-to-pdf": "^2.0.0",
-    "pdf-convert-js": "^1.0.7",
     "pdfkit": "^0.14.0",
-    "prompts": "^2.4.2",
-    "sharp": "^0.33.2"
+    "prompts": "^2.4.2"
   }
 }
