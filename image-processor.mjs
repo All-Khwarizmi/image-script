@@ -5,6 +5,9 @@ import {
   readdirSync,
   existsSync,
   mkdirSync,
+  unlinkSync,
+  copyFileSync,
+  open,
 } from "fs";
 import path from "path";
 import { join } from "path";
@@ -12,7 +15,6 @@ import { fileURLToPath } from "url";
 import convert from "heic-convert";
 import PDFDocument from "pdfkit";
 import { PdfConvert } from "pdf-convert-js";
-import prompts from "prompts";
 const __filename = fileURLToPath(import.meta.url);
 
 export default class ImageProcessor {
@@ -22,6 +24,8 @@ export default class ImageProcessor {
     this.outputPath = join(this.directoryPath, "aaaoutput");
   }
   setup() {
+    console.log(`
+    Setting up the image processor`);
     // Ensure the output folder exists
     if (!existsSync(this.outputPath)) {
       mkdirSync(this.outputPath);
@@ -41,6 +45,8 @@ export default class ImageProcessor {
     // Create a folder called png
     mkdirSync(`${this.directoryPath}/png`, { recursive: true });
 
+    console.log(`
+    Setup complete`);
     return files;
   }
   getFilesByExtension(directoryPath, extension) {
@@ -55,7 +61,8 @@ export default class ImageProcessor {
         files.push(file);
       }
     });
-
+    console.log(`
+    Files found: ${files}`);
     return files;
   }
 
@@ -70,47 +77,29 @@ export default class ImageProcessor {
         format: "PNG", // output format
         quality: 0.5, // the jpeg compression quality, between 0 and 1
       });
+
+      // Copy file to original folder
+      copyFileSync(
+        join(this.directoryPath, file),
+        join(this.directoryPath, "original", file)
+      );
+      console.log(`
+        File copied to original folder: ${file}`);
       console.log(`Writing file: ${file}`);
       writeFileSync(
         join(this.directoryPath, "png", `${file}.png`),
         outputBuffer
       );
-    }
-  }
-
-  async #copyFilesFromHeicToPng(files, directoryPath) {
-    console.log(`
-    Copying files from HEIC to PNG`);
-    files.forEach(async (file) => {
-      console.log(`Reading file: ${file}`);
-      const inputBuffer = readFileSync(join(directoryPath, file));
-      convert({
-        buffer: inputBuffer, // the HEIC file buffer
-        format: "PNG", // output format
-        quality: 1, // the jpeg compression quality, between 0 and 1
-      }).then((jpgBuffer) => {
-        console.log(`Writing file: ${file}`);
-        writeFileSync(join(directoryPath, "png", `${file}.png`), jpgBuffer);
+      console.log(`File ${file} written`);
+      // Open file to be manipulated
+      open(join(this.directoryPath, file), "r", (err, fd) => {
+        if (err) throw err;
+        console.log(`File ${file} opened`);
       });
-    });
-  }
-  async #convertImageWthImgToPDF(files, fileName) {
-    console.log({ "files in convertImage": files });
-
-    // Open the files and convert them to buffer
-    const images = files.map((file) => {
-      const buffer = readFileSync(join(directoryPath, "png", file));
-      return buffer;
-    });
-
-    console.log({ images });
-    const pdf = imgToPDF(images, imgToPDF.sizes.A4).pipe(
-      createWriteStream(
-        join(directoryPath, "aaaoutput", `${fileName.value}.pdf`)
-      )
-    );
-    console.log(pdf);
-    console.log("The PDF has been created");
+      // Remove file from directory
+      unlinkSync(join(this.directoryPath, file));
+      console.log(`File ${file} removed`);
+    }
   }
 
   async convertWthPDFKit(files, fileName) {
@@ -140,19 +129,4 @@ export default class ImageProcessor {
     console.log("The PDF has been created");
   }
 
-  async shrinkPdfFile(fileName) {
-    // Compress the pdf file
-    const pdfConvert = new PdfConvert(join(this.outputPath, `${fileName}.pdf`));
-    const shrunkenPdf = await pdfConvert.shrink({
-      compress: true,
-      log: true,
-      resolution: 72,
-    });
-    writeFileSync(
-      join(this.outputPath, `${fileName}-compressed.pdf`),
-      shrunkenPdf
-    );
-
-    console.log("The PDF has been compressed");
-  }
 }
