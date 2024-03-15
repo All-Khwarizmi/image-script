@@ -127,7 +127,7 @@ export default class ImageProcessor {
     }
   }
 
-  async convertWthPDFKit(files, fileName) {
+  async convertToPDF(files, fileName) {
     console.log({ "files in convertWthPDFKit": files });
 
     const doc = new PDFDocument({
