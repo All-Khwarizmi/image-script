@@ -14,7 +14,7 @@ import { join } from "path";
 import { fileURLToPath } from "url";
 import convert from "heic-convert";
 import PDFDocument from "pdfkit";
-import { PdfConvert } from "pdf-convert-js";
+
 const __filename = fileURLToPath(import.meta.url);
 
 export default class ImageProcessor {
