@@ -2,11 +2,14 @@
   "name": "img",
   "version": "1.0.0",
   "description": "",
-  "main": "img.js",
+  "main": "main.mjs",
   "entryPoint": "..",
+  "output": "output",
+  "extension": ".HEIC",
+  "saveTo": "original",
   "scripts": {
-    "conv": "node main.mjs",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "conv": "node main.mjs"
+
   },
   "keywords": [],
   "author": "",

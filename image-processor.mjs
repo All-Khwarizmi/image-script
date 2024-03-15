@@ -14,14 +14,37 @@ import { join } from "path";
 import { fileURLToPath } from "url";
 import convert from "heic-convert";
 import PDFDocument from "pdfkit";
+import pjson from "./package.json" with { type: "json" };
 
 const __filename = fileURLToPath(import.meta.url);
 
 export default class ImageProcessor {
   constructor() {
+    const extension = pjson.extension;
+    if (!extension) {
+      console.log("No extension found in package.json");
+      return process.exit(1);
+    }
+    this.extension = extension;
+    const saveTo = pjson.saveTo;
+    if (!saveTo) {
+      console.log("No saveTo found in package.json");
+      return process.exit(1);
+    }
+    this.saveTo = saveTo;
+    const entryPoint = pjson.entryPoint;
+    if (!entryPoint) {
+      console.log("No entryPoint found in package.json");
+      return process.exit(1);
+    }
+    const output = pjson.output;
+    if (!output) {
+      console.log("No output found in package.json");
+      return process.exit(1);
+    }
     const __dirname = path.dirname(__filename);
-    this.directoryPath = join(__dirname, "..");
-    this.outputPath = join(this.directoryPath, "aaaoutput");
+    this.directoryPath = join(__dirname, entryPoint);
+    this.outputPath = join(this.directoryPath, output);
   }
   setup() {
     console.log(`
@@ -81,7 +104,7 @@ export default class ImageProcessor {
       // Copy file to original folder
       copyFileSync(
         join(this.directoryPath, file),
-        join(this.directoryPath, "original", file)
+        join(this.directoryPath, this.saveTo, file)
       );
       console.log(`
         File copied to original folder: ${file}`);
@@ -128,5 +151,4 @@ export default class ImageProcessor {
     doc.end();
     console.log("The PDF has been created");
   }
-
 }
