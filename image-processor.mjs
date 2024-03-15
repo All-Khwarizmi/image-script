@@ -49,8 +49,6 @@ export default class ImageProcessor {
     this.outputPath = join(this.directoryPath, output);
   }
   setup() {
-    console.log(`
-    Setting up the image processor`);
     // Ensure the output folder exists
     if (!existsSync(this.outputPath)) {
       mkdirSync(this.outputPath);
@@ -70,32 +68,23 @@ export default class ImageProcessor {
     // Create a folder called png
     mkdirSync(`${this.directoryPath}/png`, { recursive: true });
 
-    console.log(`
-    Setup complete`);
     return files;
   }
   getFilesByExtension(directoryPath, extension) {
-    console.log(`
-    Getting files by extension ${extension} in directory: ${directoryPath}`);
     let files = [];
 
     readdirSync(directoryPath).forEach((file) => {
       if (file.includes(extension)) {
-        console.log(`
-        File: ${file}`);
         files.push(file);
       }
     });
-    console.log(`
-    Files found: ${files}`);
+    
     return files;
   }
 
   async makePngCopies(files) {
-    console.log(`
-    Making PNG copies of files`);
+   
     for (const file of files) {
-      console.log(`Reading file: ${file}`);
       const inputBuffer = readFileSync(join(this.directoryPath, file));
       const outputBuffer = await convert({
         buffer: inputBuffer, // the HEIC file buffer
@@ -108,28 +97,23 @@ export default class ImageProcessor {
         join(this.directoryPath, file),
         join(this.directoryPath, this.saveTo, file)
       );
-      console.log(`
-        File copied to original folder: ${file}`);
-      console.log(`Writing file: ${file}`);
+     
       writeFileSync(
         join(this.directoryPath, "png", `${file}.png`),
         outputBuffer
       );
-      console.log(`File ${file} written`);
+
       // Open file to be manipulated
       open(join(this.directoryPath, file), "r", (err, fd) => {
         if (err) throw err;
-        console.log(`File ${file} opened`);
       });
+
       // Remove file from directory
       unlinkSync(join(this.directoryPath, file));
-      console.log(`File ${file} removed`);
     }
   }
 
   async convertToPDF(files, fileName) {
-    console.log({ "files in convertWthPDFKit": files });
-
     const doc = new PDFDocument({
       size: "A4",
       layout: "landscape",
@@ -151,6 +135,8 @@ export default class ImageProcessor {
     });
 
     doc.end();
-    console.log("The PDF has been created");
+    console.log(
+      `PDF created at ${join(this.outputPath, `${fileName}.pdf`)}`
+    );
   }
 }
