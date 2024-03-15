@@ -7,19 +7,19 @@ import ImageProcessor from "./image-processor.mjs";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const directoryPath = join(__dirname, "..");
+
 const imageProcessor = new ImageProcessor();
+
 const files = imageProcessor.setup();
 
 const promptMaker = new Prompt();
 
-// Prompt user to select the file or files to convert
 let response;
 let fileName;
 
 (async () => {
   await imageProcessor.makePngCopies(files);
 
-  // copyFilesFromHeicToPng(files);
   const filesPngPath = join(directoryPath, "png");
   const filesPngConverted = imageProcessor.getFilesByExtension(
     filesPngPath,
